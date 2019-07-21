@@ -1,0 +1,117 @@
+var Train1 = new Object({
+	trainNumber: 1,
+	presentPlatform: 2,
+	track: [1, 2, 3, 4, 5, 6, 7],
+	totalPassengers: 200
+});
+
+var Train2 = new Object({
+	trainNumber: 2,
+	presentPlatform: 8,
+	track: [8, 9, 10, 5, 11, 12],
+	totalPassengers: 150
+});
+
+var Train3 = new Object({
+	trainNumber: 3,
+	presentPlatform: 14,
+	track: [13, 14, 3, 10, 15, 16],
+	totalPassengers: 20
+});
+
+const runTrainToNextPlatform = (train) => {
+	const currentTrainIndex = train.track.indexOf(train.presentPlatform);
+	if (train.track[currentTrainIndex] !== train.track[train.track.length - 1]) {
+		train.presentPlatform = train.track[currentTrainIndex + 1];
+		console.log(`Train ${train.trainNumber} moved to platform: ${train.presentPlatform}`)
+	} else {
+		console.log(`Train ${train.trainNumber} already on last platform`);
+	}
+};
+
+const avoidAllTrainsCollision = (train1, train2, train3) => {
+	// Train 1 has more number of people so allow Train 1 and delay other 2 trains
+	runTrainToNextPlatform(train1);
+	if (train2.totalPassengers >= train3.totalPassengers) {
+		console.log(`${train2.trainNumber} delayed to avoid collision with ${train1.trainNumber}`);
+		runTrainToNextPlatform(train2);
+	} else {
+		console.log(`${train3.trainNumber} delayed to avoid collision with ${train2.trainNumber} and ${train1.trainNumber}`);
+		runTrainToNextPlatform(train3);
+	}
+};
+
+const comparePassangersPriority = (train1, train2, train3) => {
+	// Train 1- Train 2 collsion
+	if (train1.totalPassengers > train2.totalPassengers) {
+		runTrainToNextPlatform(train1);
+		runTrainToNextPlatform(train3);
+		console.log(`${train2.trainNumber} delayed to avoid collision with ${train1.trainNumber}`);
+		runTrainToNextPlatform(train2);
+	} else {
+		runTrainToNextPlatform(train2);
+		runTrainToNextPlatform(train3);
+		// Add delay
+		console.log(`${train1.trainNumber} delayed to avoid collision with ${train2.trainNumber}`);
+		runTrainToNextPlatform(train1);
+	}
+};
+
+
+const checkCollissionAndMoveTrain = () => {
+	// Get index of current platform 
+	const presentPlatformIndexOf_Train1 = Train1.track.indexOf(Train1.presentPlatform);
+	const presentPlatformIndexOf_Train2 = Train2.track.indexOf(Train2.presentPlatform);
+	const presentPlatformIndexOf_Train3 = Train3.track.indexOf(Train3.presentPlatform);
+
+
+	// Get the next platform for each train
+	const nextPlatform_Train1 = Train1.track[presentPlatformIndexOf_Train1 + 1];
+	const nextPlatform_Train2 = Train2.track[presentPlatformIndexOf_Train2 + 1];
+	const nextPlatform_Train3 = Train3.track[presentPlatformIndexOf_Train3 + 1];
+
+	if (nextPlatform_Train1 !== nextPlatform_Train2 && nextPlatform_Train1 !== nextPlatform_Train3 && nextPlatform_Train2 !== nextPlatform_Train3) {
+		// No collision occured
+		// All trains can run to next station
+		runTrainToNextPlatform(Train1);
+		runTrainToNextPlatform(Train2);
+		runTrainToNextPlatform(Train3);
+	} else if (nextPlatform_Train1 === nextPlatform_Train2 && nextPlatform_Train1 !== nextPlatform_Train3 && nextPlatform_Train2 !== nextPlatform_Train3) {
+		// Collision Occured : Train 1 - Train 2
+		comparePassangersPriority(Train1, Train2, Train3);
+	} else if (nextPlatform_Train1 !== nextPlatform_Train2 && nextPlatform_Train1 === nextPlatform_Train3 && nextPlatform_Train2 !== nextPlatform_Train3) {
+		// Collision Occured : Train 1 - Train 3
+		comparePassangersPriority(Train1, Train3, Train2);
+	} else if (nextPlatform_Train1 !== nextPlatform_Train2 && nextPlatform_Train1 !== nextPlatform_Train3 && nextPlatform_Train2 === nextPlatform_Train3) {
+		// Collision Occured : Train 2 - Train 3
+		comparePassangersPriority(Train2, Train3, Train1);
+	} else if (nextPlatform_Train1 === nextPlatform_Train2 && nextPlatform_Train1 === nextPlatform_Train3) {
+		// All three trains might collide at next platform
+		if (Train1.totalPassengers >= Train2.totalPassengers && Train1.totalPassengers >= Train3.totalPassengers) {
+			avoidAllTrainsCollision(Train1, Train2, Train3);
+		} else if (Train2.totalPassengers >= Train1.totalPassengers && Train2.totalPassengers >= Train3.totalPassengers) {
+			// Train 2 has more number of people so allow Train 2 and delay other 2 trains
+			avoidAllTrainsCollision(Train2, Train1, Train3);
+		} else if (Train3.totalPassengers >= Train1.totalPassengers && Train3.totalPassengers >= Train2.totalPassengers) {
+			// Train 3 has more number of people so allow train 3 and delay other 2 trains
+			avoidAllTrainsCollision(Train3, Train1, Train2);
+		}
+	}
+};
+
+const runTrains = () => {
+	const lastPlatform_Train1 = Train1.track[Train1.track.length - 1];
+	const lastPlatform_Train2 = Train2.track[Train2.track.length - 1];
+	const lastPlatform_Train3 = Train3.track[Train3.track.length - 1];
+
+	// Check at time atlest two of the trains are moving
+	while (
+		(Train1.presentPlatform !== lastPlatform_Train1 && Train2.presentPlatform !== lastPlatform_Train2) ||
+		(Train2.presentPlatform !== lastPlatform_Train2 && Train3.presentPlatform !== lastPlatform_Train3) ||
+		(Train1.presentPlatform !== lastPlatform_Train1 && Train3.presentPlatform !== lastPlatform_Train3)
+	) {
+		checkCollissionAndMoveTrain();
+	}
+};
+
+runTrains();
