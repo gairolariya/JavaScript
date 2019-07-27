@@ -1,4 +1,4 @@
-# JavaScript
+# JavaScript - Train Collision Puzzel
 Solve using javascript
 We have 3 trains moving on different railways from one station to another with the same
 speed, every train has assigned different number of people. They need to circulate from
