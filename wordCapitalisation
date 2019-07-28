@@ -1,6 +1,6 @@
 # Convert all the words with 3 alphabets to upper case in a  sentence.
 
-var sentences = "Convert all the words with 3 alphabets to upper case in a  sentence."
+var sentences = "one, two , three and four !"
 
 function wordCapitalisation(string) {
 var newStr = string.split(' ').map(function(value){
