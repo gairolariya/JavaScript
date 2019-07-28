@@ -1,0 +1,30 @@
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
+
+function solution(message, K) {
+    // write your code in JavaScript (Node.js 8.9.4)
+    var str = message;
+    var output = ' ';
+    
+    // if str doesn't cross K limit 
+    if(str.length <= K ) {
+      output = str.trim();
+         return output;
+    }
+  else {
+    let word = (str.slice(0,K+1));      // To store selected words till K length
+     
+     // if output ends with space  
+      if(word.endsWith(' ')) {
+        let x = ((word.trim()).length);
+        output = (word.slice(0,x));
+        return output;
+      }
+     //output crops a word
+    else {
+      var n = word.lastIndexOf(' ');
+      output = (word.slice(0,n));
+      return (output);   
+    }
+  }
+}
