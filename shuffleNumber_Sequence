@@ -1,0 +1,18 @@
+#initialNumber = 123456 should return ----> finalNumber = 162534
+
+
+function solution(A) {
+    var str = A.toString();
+    var result = "";
+  
+  if(!isNaN(A) && A >= 0 && A <= 100000000) {
+    for(var i = 0; i < str.length; i++) {
+      if(i % 2 == 0) {
+        result += str[Math.floor(i / 2)];
+      } else {
+        result += str[str.length - Math.floor(i / 2 + 1)];
+      }
+    }
+  }
+  return Number(result);   // to conver string to number
+}
